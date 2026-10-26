@@ -49,6 +49,26 @@ export interface Usulan {
   created_at: string;
 }
 
+// Jejak pekerjaan yang sudah dikerjakan (rekap). Judul ditulis gaya pesan
+// commit GitHub; TANPA link repo/commit di mana pun (keputusan user).
+export interface Riwayat {
+  id: string;
+  proyek_id: string;
+  judul: string;
+  tanggal: string; // YYYY-MM-DD
+  sumber: "github" | "manual";
+  sha?: string; // kunci dedup impor GitHub; tidak pernah dirender sebagai link
+}
+
+// Slug URL untuk halaman per proyek, diturunkan dari nama:
+// "E-Markaz" -> "e-markaz", "E-maliyah" -> "e-maliyah".
+export function slugProyek(nama: string): string {
+  return nama
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 export const PRIORITAS_LABEL: Record<Prioritas, string> = {
   mendesak: "Mendesak",
   tinggi: "Tinggi",

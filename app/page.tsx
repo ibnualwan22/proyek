@@ -257,7 +257,22 @@ export default function HalamanPublik() {
       .catch(() => setLoading(false));
   }, [periode]);
 
-  const kosong = grup.length === 0 && selesai.length === 0 && proyekKosong.length === 0;
+  // Dashboard = yang sedang dikerjakan: pisahkan dari grup prioritas agar
+  // tampil di seksi sendiri di atas antrean.
+  const dikerjakan = grup.flatMap((g) =>
+    g.fitur.filter((f) => f.status === "dikerjakan" || f.status === "testing")
+  );
+  const sisaGrup = grup
+    .map((g) => ({
+      ...g,
+      fitur: g.fitur.filter((f) => f.status !== "dikerjakan" && f.status !== "testing"),
+    }))
+    .filter((g) => g.fitur.length > 0);
+  const kosong =
+    dikerjakan.length === 0 &&
+    sisaGrup.length === 0 &&
+    selesai.length === 0 &&
+    proyekKosong.length === 0;
 
   return (
     <main className="max-w-3xl mx-auto px-4 py-8">
@@ -286,7 +301,26 @@ export default function HalamanPublik() {
       )}
 
       <div className="space-y-6">
-        {grup.map((g) => (
+        {!loading && (
+          <section className="border-2 rounded-xl p-4 border-blue-400 bg-blue-50">
+            <h2 className="text-xl font-bold mb-3 text-blue-800">
+              🔨 Sedang dikerjakan ({dikerjakan.length})
+            </h2>
+            {dikerjakan.length === 0 ? (
+              <p className="text-sm text-slate-500">
+                Belum ada pekerjaan yang ditandai sedang dikerjakan untuk periode ini.
+              </p>
+            ) : (
+              <div className="space-y-3">
+                {dikerjakan.map((f) => (
+                  <FiturCard key={f.id} fitur={f} />
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+
+        {sisaGrup.map((g) => (
           <section key={g.prioritas} className={`border-2 rounded-xl p-4 ${WARNA_GRUP[g.prioritas]}`}>
             <h2 className={`text-xl font-bold mb-3 ${WARNA_JUDUL_GRUP[g.prioritas]}`}>
               {PRIORITAS_LABEL[g.prioritas]} ({g.fitur.length})

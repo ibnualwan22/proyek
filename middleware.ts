@@ -9,6 +9,8 @@ export async function middleware(req: NextRequest) {
   const method = req.method;
 
   if (PUBLIC_PATHS.has(pathname)) return NextResponse.next();
+  // Halaman rekap + halaman per proyek bersifat publik seperti dashboard.
+  if (pathname === "/sudah-dikerjakan" || pathname.startsWith("/proyek/")) return NextResponse.next();
   // Komentar: publik boleh baca & kirim; hapus hanya admin.
   if (pathname === "/api/komentar" && (method === "GET" || method === "POST")) return NextResponse.next();
   // Usulan: publik boleh kirim; baca & hapus hanya admin.

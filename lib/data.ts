@@ -1,8 +1,8 @@
 import fs from "fs";
 import path from "path";
 import { randomUUID } from "crypto";
-import type { Fitur, Komentar, Kesulitan, Prioritas, Proyek, StatusFitur, TargetPeriode, Usulan } from "./labels";
-export type { Fitur, Komentar, Kesulitan, Prioritas, Proyek, StatusFitur, TargetPeriode, Usulan };
+import type { Fitur, Komentar, Kesulitan, Prioritas, Proyek, Riwayat, StatusFitur, TargetPeriode, Usulan } from "./labels";
+export type { Fitur, Komentar, Kesulitan, Prioritas, Proyek, Riwayat, StatusFitur, TargetPeriode, Usulan };
 
 const DATA_DIR = process.env.DATA_DIR || path.join(process.cwd(), "data");
 
@@ -80,6 +80,12 @@ export function readUsulan(): Usulan[] {
 }
 export function writeUsulan(list: Usulan[]): void {
   writeFile("usulan", { usulan: list });
+}
+export function readRiwayat(): Riwayat[] {
+  return readFile<{ riwayat: Riwayat[] }>("riwayat", { riwayat: [] }).riwayat;
+}
+export function writeRiwayat(list: Riwayat[]): void {
+  writeFile("riwayat", { riwayat: list });
 }
 
 export function newId(): string {
